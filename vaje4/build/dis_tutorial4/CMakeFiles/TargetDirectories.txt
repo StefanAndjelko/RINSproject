@@ -1,9 +1,0 @@
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/uninstall.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/dis_tutorial4_uninstall.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/test.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/edit_cache.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/rebuild_cache.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/list_install_components.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/install.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/install/local.dir
-/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4/CMakeFiles/install/strip.dir

@@ -1,6 +1,0 @@
-Invoking command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/mu/Documents/RINS/vaje/vaje4/src/dis_tutorial4 -DCMAKE_INSTALL_PREFIX=/home/mu/Documents/RINS/vaje/vaje4/install/dis_tutorial4
-Invoked command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/mu/Documents/RINS/vaje/vaje4/src/dis_tutorial4 -DCMAKE_INSTALL_PREFIX=/home/mu/Documents/RINS/vaje/vaje4/install/dis_tutorial4
-Invoking command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4 -- -j16 -l16
-Invoked command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4 -- -j16 -l16
-Invoking command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4
-Invoked command in '/home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/vaje/vaje4/build/dis_tutorial4
