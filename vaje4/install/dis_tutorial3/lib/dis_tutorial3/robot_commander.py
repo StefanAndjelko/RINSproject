@@ -37,6 +37,12 @@ from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from rclpy.qos import qos_profile_sensor_data
 
+def isInArray(arr, coords):
+    for point in arr:
+        if abs(point[0] - coords[0]) <= 0.5 and abs(point[1] - coords[1]) <= 0.8:
+            return True
+
+    return False
 
 class TaskResult(Enum):
     UNKNOWN = 0
@@ -64,6 +70,8 @@ class RobotCommander(Node):
         self.status = None
         self.initial_pose_received = False
         self.is_docked = None
+        self.face_coords = []
+        self.currentFaceArrLength = 0
 
         # ROS2 subscribers
         self.create_subscription(DockStatus,
@@ -301,9 +309,44 @@ class RobotCommander(Node):
         self.get_logger().debug(msg)
         return
     
-    def getFaceCoordinates(self, msg):
-        self.info(str(msg.pose.position))
+    def moveRobotToPosition(self, x, y):
+        goal_pose = PoseStamped()
+        goal_pose.header.frame_id = 'map'
+        goal_pose.header.stamp = self.get_clock().now().to_msg()
+
+        goal_pose.pose.position.x = x
+        goal_pose.pose.position.y = y
+        goal_pose.pose.orientation = self.YawToQuaternion(0.0)
+
+        self.goToPose(goal_pose)
+
         return
+
+    def getFaceCoordinates(self, msg):
+        pos = msg.pose.position
+        x = msg.pose.position.x
+        y = msg.pose.position.y
+        # tempArr = [x, y]
+
+        # if len(self.face_coords) == 0:
+        #     self.face_coords.append(tempArr)
+        # elif not isInArray(self.face_coords, tempArr):
+        #     self.face_coords.append(tempArr)
+        #     self.info(' '.join(map(str, self.face_coords)))
+
+        self.moveRobotToPosition(x, y)
+
+        while not rc.isTaskComplete():
+            rc.info("Waiting for the task to complete...")
+            time.sleep(1)
+
+        rc.spin(-0.57)
+
+
+        return
+
+    
+
 
 def main(args=None):
     
@@ -338,17 +381,6 @@ def main(args=None):
 
     rc.spin(-0.57)
 
-    goal_pose.pose.position.x = 0.1
-    goal_pose.pose.position.y = -0.1
-    goal_pose.pose.orientation = rc.YawToQuaternion(0.81)
-
-    rc.goToPose(goal_pose)
-
-    while not rc.isTaskComplete():
-        rc.info("Waiting for the task to complete...")
-        time.sleep(1)
-
-    rc.spin(-0.57)
 
     rc.destroyNode()
 
