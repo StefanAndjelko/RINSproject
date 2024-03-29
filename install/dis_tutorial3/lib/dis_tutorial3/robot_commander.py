@@ -16,6 +16,7 @@
 
 from enum import Enum
 import time
+import numpy as np
 
 from action_msgs.msg import GoalStatus
 from builtin_interfaces.msg import Duration
@@ -72,6 +73,7 @@ class RobotCommander(Node):
         self.is_docked = None
         self.faceDetected = False
         self.currentGoalPos = []
+        self.currentNormal = []
 
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -345,10 +347,15 @@ class RobotCommander(Node):
 
 
     def faceRecognizedCallback(self, msg):
-        x = msg.pose.position.x
-        y = msg.pose.position.y
-        self.currentGoalPos = [x, y]
-        self.faceDetected = True
+        if msg.id == 0:
+            if not self.faceDetected:
+                x = msg.pose.position.x
+                y = msg.pose.position.y
+                self.currentGoalPos = [x, y]
+                self.faceDetected = True
+        elif msg.id == 1:
+            self.currentNormal = [msg.pose.position.x, msg.pose.position.y, msg.pose.position.z]
+
         # self.moveRobotToPosition(x, y)
 
     def transformCoordinates(self, x, y):
@@ -430,6 +437,10 @@ def main(args=None):
                 transCoords = rc.transformCoordinates(rc.currentGoalPos[0], rc.currentGoalPos[1])
                 goal_pose.pose.position.x = transCoords.point.x
                 goal_pose.pose.position.y = transCoords.point.y
+                if not np.isnan(rc.currentNormal).any():
+                    goal_pose.pose.position.x += rc.currentNormal[0] * 0.15
+                    goal_pose.pose.position.y += rc.currentNormal[1] * 0.15
+
                 goal_pose.pose.orientation = rc.YawToQuaternion(0.99)
 
                 rc.goToPose(goal_pose)
