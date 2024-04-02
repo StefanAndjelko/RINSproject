@@ -44,6 +44,11 @@ from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from rclpy.qos import qos_profile_sensor_data
 
+import math
+
+
+def is_one(num):
+    return math.abs(num - 1) < 1e-4
 
 class TaskResult(Enum):
     UNKNOWN = 0
@@ -78,6 +83,9 @@ class RobotCommander(Node):
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
+        self.face_counter = 0
+        self.new_face_detected_status = [0, 0, 0]
+
         # ROS2 subscribers
         self.create_subscription(DockStatus,
                                  'dock_status',
@@ -90,6 +98,8 @@ class RobotCommander(Node):
                                                               amcl_pose_qos)
 
         self.face_location_sub = self.create_subscription(Marker, 'people_marker', self.faceRecognizedCallback, 10)
+
+        self.is_new_face = self.create_subscription(Marker, 'new_face', self.newFaceCallback, 10)
         
         # ROS2 publishers
         self.initial_pose_pub = self.create_publisher(PoseWithCovarianceStamped,
@@ -352,9 +362,12 @@ class RobotCommander(Node):
                 x = msg.pose.position.x
                 y = msg.pose.position.y
                 self.currentGoalPos = [x, y]
-                self.faceDetected = True
         elif msg.id == 1:
             self.currentNormal = [msg.pose.position.x, msg.pose.position.y, msg.pose.position.z]
+
+    def newFaceCallback(self, msg):
+        self.faceDetected = True
+
 
         # self.moveRobotToPosition(x, y)
 
@@ -423,11 +436,13 @@ def main(args=None):
         goal_pose.pose.orientation = rc.YawToQuaternion(0.57)
 
         rc.goToPose(goal_pose)
+        should_stop = False
 
         while not rc.isTaskComplete():
             rc.info("Waiting for the task to complete...")
-
             if rc.faceDetected:
+
+                # print("FOUND NEW FACE")
                 # rc.info(f"Face recognized at x={rc.currentGoalPos[0]}, y={rc.currentGoalPos[1]}, redirecting robot.")
 
                 rc.goal_handle.cancel_goal_async()
@@ -437,21 +452,29 @@ def main(args=None):
                 transCoords = rc.transformCoordinates(rc.currentGoalPos[0], rc.currentGoalPos[1])
                 goal_pose.pose.position.x = transCoords.point.x
                 goal_pose.pose.position.y = transCoords.point.y
+                yaw_degrees = 0
                 if not np.isnan(rc.currentNormal).any():
-                    goal_pose.pose.position.x += rc.currentNormal[0] * 0.15
-                    goal_pose.pose.position.y += rc.currentNormal[1] * 0.15
+                    goal_pose.pose.position.x += rc.currentNormal[0] * 0.2
+                    goal_pose.pose.position.y += rc.currentNormal[1] * 0.2
 
-                goal_pose.pose.orientation = rc.YawToQuaternion(0.99)
+                    radians = np.arctan2(-1 * rc.currentNormal[1], -1 * rc.currentNormal[0])
+                    yaw_degrees = np.degrees(radians)
+
+                goal_pose.pose.orientation = rc.YawToQuaternion(yaw_degrees)
 
                 rc.goToPose(goal_pose)
                 rc.info("GOING TO NEW POSE")
 
                 while not rc.isTaskComplete():
-                    rc.info("Waiting for the task to complete...")
+                    rc.info("Going to the face location...")
                     time.sleep(1)
-                rc.spin(0.99)
 
                 rc.faceDetected = False
+                rc.face_counter += 1
+
+                if rc.face_counter == 3:
+                    print("THREE FACES DETECTED, STOPPING")
+                    break
 
                 goal_pose.pose.position.x = point[0]
                 goal_pose.pose.position.y = point[1]
@@ -460,14 +483,10 @@ def main(args=None):
                 rc.info(f"GOING BACK TO THE GOAL x={point[0]}, y={point[1]}")
                 rc.goToPose(goal_pose)
 
-                
-                
-
+            if should_stop:
+                break
 
             time.sleep(1)
-
-        rc.spin(-0.57)
-
     # goal_pose.pose.position.x = 2.6
     # goal_pose.pose.position.y = -1.3
     # goal_pose.pose.orientation = rc.YawToQuaternion(0.57)
