@@ -45,10 +45,7 @@ from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from rclpy.qos import qos_profile_sensor_data
 
 import math
-
-
-def is_one(num):
-    return math.abs(num - 1) < 1e-4
+from pygame import mixer
 
 class TaskResult(Enum):
     UNKNOWN = 0
@@ -77,6 +74,7 @@ class RobotCommander(Node):
         self.initial_pose_received = False
         self.is_docked = None
         self.faceDetected = False
+        self.should_move = False
         self.currentGoalPos = []
         self.currentNormal = []
 
@@ -85,6 +83,7 @@ class RobotCommander(Node):
 
         self.face_counter = 0
         self.new_face_detected_status = [0, 0, 0]
+        self.faces_to_visit = []
 
         # ROS2 subscribers
         self.create_subscription(DockStatus,
@@ -358,14 +357,17 @@ class RobotCommander(Node):
 
     def faceRecognizedCallback(self, msg):
         if msg.id == 0:
-            if not self.faceDetected:
-                x = msg.pose.position.x
-                y = msg.pose.position.y
-                self.currentGoalPos = [x, y]
+            pass
+            # if not self.should_move:
+            #     x = msg.pose.position.x
+            #     y = msg.pose.position.y
+            #     self.should_move = True
+            #     # self.currentGoalPos = [x, y]
         elif msg.id == 1:
             self.currentNormal = [msg.pose.position.x, msg.pose.position.y, msg.pose.position.z]
 
     def newFaceCallback(self, msg):
+        self.faces_to_visit.append([msg.pose.position.x, msg.pose.position.y])
         self.faceDetected = True
 
 
@@ -427,58 +429,90 @@ def main(args=None):
     goal_pose.header.frame_id = 'map'
     goal_pose.header.stamp = rc.get_clock().now().to_msg()
 
-    goal_points = [[2.6, -1.3], [2.0, 1.3], [0.1, -0.1]]
+    goal_points = [[2.6, -1.3], [2.0, 1.5], [0.1, -0.1]]
+    should_stop = False
+
 
     for point in goal_points:
         rc.currentGoalPos = [point[0], point[1]]
         goal_pose.pose.position.x = rc.currentGoalPos[0]
         goal_pose.pose.position.y = rc.currentGoalPos[1]
-        goal_pose.pose.orientation = rc.YawToQuaternion(0.57)
+        # goal_pose.pose.orientation = rc.YawToQuaternion(0.57)
 
         rc.goToPose(goal_pose)
-        should_stop = False
-
         while not rc.isTaskComplete():
             rc.info("Waiting for the task to complete...")
-            if rc.faceDetected:
+            print("NUM OF FACES TO GO TO: ", len(rc.faces_to_visit))
+            if len(rc.faces_to_visit) > 0:
+                goal_pose.pose.position.x = rc.faces_to_visit[0][0]
+                goal_pose.pose.position.x = rc.faces_to_visit[0][1]
+
+                rc.faces_to_visit.pop(0)
 
                 # print("FOUND NEW FACE")
                 # rc.info(f"Face recognized at x={rc.currentGoalPos[0]}, y={rc.currentGoalPos[1]}, redirecting robot.")
 
-                rc.goal_handle.cancel_goal_async()
+                cancel = rc.goal_handle.cancel_goal_async()
+                rclpy.spin_until_future_complete(rc, cancel, timeout_sec=1.0)
+
                 goal_pose = PoseStamped()
                 goal_pose.header.frame_id = 'map'
                 goal_pose.header.stamp = rc.get_clock().now().to_msg()
-                transCoords = rc.transformCoordinates(rc.currentGoalPos[0], rc.currentGoalPos[1])
+                transCoords = rc.transformCoordinates(goal_pose.pose.position.x, goal_pose.pose.position.y) 
                 goal_pose.pose.position.x = transCoords.point.x
                 goal_pose.pose.position.y = transCoords.point.y
-                yaw_degrees = 0
-                # if not np.isnan(rc.currentNormal).any():
-                goal_pose.pose.position.x += rc.currentNormal[0] * 0.2
-                goal_pose.pose.position.y += rc.currentNormal[1] * 0.2
+                yaw_degrees = 0.0
+                if len(rc.currentNormal) < 3:
+                    rc.currentNormal = [0, 0, 0]
+                else:
+                    yaw_degrees = np.arccos(np.dot(np.array([0, 1, 0]), rc.currentNormal))
+                    yaw_degrees = float(np.degrees(yaw_degrees))
+                    print("YAW", yaw_degrees)
 
-                radians = np.arctan2(-1 * rc.currentNormal[1], -1 * rc.currentNormal[0])
-                yaw_degrees = np.degrees(radians)
 
-                goal_pose.pose.orientation = rc.YawToQuaternion(yaw_degrees)
-
+                goal_pose.pose.position.x += rc.currentNormal[0] * 0.01
+                goal_pose.pose.position.y += rc.currentNormal[1] * 0.01
+                # goal_pose.pose.orientation = rc.YawToQuaternion(0)
                 rc.goToPose(goal_pose)
+                
                 rc.info("GOING TO NEW POSE")
 
                 while not rc.isTaskComplete():
                     rc.info("Going to the face location...")
                     time.sleep(1)
+                
+                # rc.spin(0)
+                # while not rc.isTaskComplete():
+                #     rc.info("Rotating to zero...")
+                #     time.sleep(1)
+
+                
+                rc.spin(yaw_degrees)
+                while not rc.isTaskComplete():
+                    rc.info("Rotating towards face...")
+                    time.sleep(1)
+
+                mixer.init()
+                sound = mixer.Sound("hello.wav")
+                sound.play()
+                time.sleep(5)
 
                 rc.faceDetected = False
+                rc.should_move = False
                 rc.face_counter += 1
 
-                if rc.face_counter == 3:
+                rc.info("SAID HELLO")
+
+                if rc.face_counter >= 3:
                     print("THREE FACES DETECTED, STOPPING")
+                    stopping = rc.goal_handle.cancel_goal_async()
+                    rclpy.spin_until_future_complete(rc, stopping, timeout_sec=1.0)
+                    should_stop = True
                     break
 
                 goal_pose.pose.position.x = point[0]
                 goal_pose.pose.position.y = point[1]
-                goal_pose.pose.orientation = rc.YawToQuaternion(0.99)
+                # goal_pose.pose.orientation = rc.YawToQuaternion(0.99)
 
                 rc.info(f"GOING BACK TO THE GOAL x={point[0]}, y={point[1]}")
                 rc.goToPose(goal_pose)
@@ -487,17 +521,7 @@ def main(args=None):
                 break
 
             time.sleep(1)
-    # goal_pose.pose.position.x = 2.6
-    # goal_pose.pose.position.y = -1.3
-    # goal_pose.pose.orientation = rc.YawToQuaternion(0.57)
 
-    # rc.goToPose(goal_pose)
-
-    # while not rc.isTaskComplete():
-    #     rc.info("Waiting for the task to complete...")
-    #     time.sleep(1)
-
-    # rc.spin(-0.57)
 
     rc.destroyNode()
 

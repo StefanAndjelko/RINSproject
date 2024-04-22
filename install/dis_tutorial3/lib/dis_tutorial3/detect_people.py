@@ -56,6 +56,7 @@ class detect_faces(Node):
 		self.edges = []
 
 		self.detected_faces = []
+		self.current_num_of_faces = 0
 		self.sift = cv2.SIFT_create()
 
 		self.get_logger().info(f"Node has been initialized! Will publish face markers to {marker_topic}.")
@@ -92,7 +93,7 @@ class detect_faces(Node):
 		try:
 			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
 
-			self.get_logger().info(f"Running inference on image...")
+			# self.get_logger().info(f"Running inference on image...") ### THIS PRINTS IF THE FACE DETECT IS RUNNING
 
 			# run inference
 			res = self.model.predict(cv_image, imgsz=(256, 320), show=False, verbose=False, classes=[0], device=self.device)
@@ -111,19 +112,22 @@ class detect_faces(Node):
 				x1, y1, x2, y2 = bbox.tolist()
 
 				face_roi = cv_image[int(y1):int(y2), int(x1):int(x2)]
+				width = len(face_roi[0])
+				print(width)
 
 				keypoints, descriptors = self.detect_face(face_roi)
 
-				if not self.is_face_detected(descriptors):
+				if width > 28 and not self.is_face_detected(descriptors):
 					self.detected_faces.append(descriptors)
-					self.new_face_pub.publish(Marker())
+					# self.new_face_pub.publish(Marker())
+					cv2.imshow("detected face", face_roi)
 					print("New face detected!")
 							
 				else:
 					print("Face already detected!")
 
 
-				print("ALL FACES DETECTED: ", len(self.detected_faces))
+				# print("ALL FACES DETECTED: ", len(self.detected_faces))
 
 
 
@@ -195,7 +199,7 @@ class detect_faces(Node):
 			marker.pose.position.y = float(d[1])
 			marker.pose.position.z = float(d[2])
 
-			self.marker_pub.publish(marker)
+			
 
 			x2 = x + 5
 			y2 = y + 5
@@ -239,8 +243,8 @@ class detect_faces(Node):
 
 			# Set the color
 			marker2.color.r = 1.0
-			marker2.color.g = 0.0
-			marker2.color.b = 1.0
+			marker2.color.g = 165 / 255
+			marker2.color.b = 0.0
 			marker2.color.a = 1.0
 
 			# Set the pose of the marker
@@ -248,7 +252,12 @@ class detect_faces(Node):
 			marker2.pose.position.y = float(normal[1])
 			marker2.pose.position.z = float(normal[2])
 
-			self.marker_pub.publish(marker2)
+			if len(self.detected_faces) > self.current_num_of_faces: 
+				self.new_face_pub.publish(marker)
+				self.marker_pub.publish(marker2)
+				self.current_num_of_faces = len(self.detected_faces)
+			self.marker_pub.publish(marker)
+
 
 
 def main():
