@@ -46,6 +46,10 @@ class detect_faces(Node):
 		self.rgb_image_sub = self.create_subscription(Image, "/oakd/rgb/preview/image_raw", self.rgb_callback, qos_profile_sensor_data)
 		self.pointcloud_sub = self.create_subscription(PointCloud2, "/oakd/rgb/preview/depth/points", self.pointcloud_callback, qos_profile_sensor_data)
 
+		# PARKING		
+		self.parking_sub = self.create_subscription(Image, "/top_camera/rgb/preview/image_raw", self.parking_callback, 10)
+
+
 		self.marker_pub = self.create_publisher(Marker, marker_topic, QoSReliabilityPolicy.BEST_EFFORT)
 		self.new_face_pub = self.create_publisher(Marker, 'new_face', 10)
 
@@ -258,7 +262,22 @@ class detect_faces(Node):
 				self.current_num_of_faces = len(self.detected_faces)
 			self.marker_pub.publish(marker)
 
+	def canny_detection(self, image):
+		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+		blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+		edges = cv2.Canny(blurred, threshold1=30, threshold2=100)
 
+		return edges
+
+	def parking_callback(self, data):
+		parking_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		edges = self.canny_detection(parking_image)
+		cv2.imshow("parking", edges)
+		key = cv2.waitKey(1)
+		if key==27:
+			print("exiting")
+			exit()
+			
 
 def main():
 	print('Face detection node starting.')
