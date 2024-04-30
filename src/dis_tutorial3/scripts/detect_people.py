@@ -180,7 +180,7 @@ class detect_faces(Node):
 			# create marker
 			marker = Marker()
 
-			marker.header.frame_id = "/base_link"
+			# marker.header.parking_image_id = "/base_link"
 			marker.header.stamp = data.header.stamp
 
 			marker.type = 2
@@ -233,7 +233,7 @@ class detect_faces(Node):
 		
 			marker2 = Marker()
 
-			marker2.header.frame_id = "/base_link"
+			# marker2.header.parking_image_id = "/base_link"
 			marker2.header.stamp = data.header.stamp
 
 			marker2.type = 0
@@ -262,27 +262,54 @@ class detect_faces(Node):
 				self.current_num_of_faces = len(self.detected_faces)
 			self.marker_pub.publish(marker)
 
-	def canny_detection(self, image):
+	def segment_circle(self, image):
+		# Convert image to grayscale
 		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
-                               param1=50, param2=30, minRadius=0, maxRadius=0)
+		gray = gray[:-40]
+		
+		# Apply Gaussian blur to reduce noise
+		blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+		
+		circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1, minDist=20, param1=50, param2=30, minRadius=0, maxRadius=0)
+    
+		# Create a mask to store the segmented circle
+		mask = np.zeros_like(gray)
+		
+		# If circles are detected
+		if circles is not None:
+			# Convert the (x, y, radius) parameters to integers
+			circles = np.round(circles[0, :]).astype("int")
+			
+			# Draw the circles on the mask
+			for (x, y, r) in circles:
+				cv2.circle(mask, (x, y), r, (255), -1)
+		
+		# Apply threshold to create binary mask
+		_, binary_mask = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
+		
+		return binary_mask
 
-		return circles
-
-	def create_circle_mask(image_shape, circle):
-		mask = np.zeros(image_shape[:2], dtype=np.uint8)
-		cv2.circle(mask, (circle[0], circle[1]), circle[2], 255, -1)  # Fills the circle region with white
-		return mask
 
 	def parking_callback(self, data):
-		parking_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		edges = self.canny_detection(parking_image)
-		cv2.imshow("parking", edges)
+		img = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		segmented_circle = self.segment_circle(img)
+
+
+
+		circle_indices = np.where(segmented_circle != 0)
+		x_avg = np.sum(circle_indices[1]) / len(circle_indices[1])
+		y_avg = np.sum(circle_indices[0]) / len(circle_indices[0])
+
+		# print("X: ", x_avg, "Y: ", y_avg)
+
+		cv2.imshow("parking", segmented_circle)
+		key = cv2.waitKey(1)
+		cv2.imshow("ogImage", img)
 		key = cv2.waitKey(1)
 		if key==27:
 			print("exiting")
 			exit()
-			
+		
 
 def main():
 	print('Face detection node starting.')
