@@ -21,6 +21,9 @@ from ultralytics import YOLO
 
 import math
 
+from geometry_msgs.msg import Twist
+
+
 # from rclpy.parameter import Parameter
 # from rcl_interfaces.msg import SetParametersResult
 
@@ -48,6 +51,7 @@ class detect_faces(Node):
 
 		# PARKING		
 		self.parking_sub = self.create_subscription(Image, "/top_camera/rgb/preview/image_raw", self.parking_callback, 10)
+		self.parking_pub = self.create_publisher(Twist, "/cmd_vel", 10)
 
 
 		self.marker_pub = self.create_publisher(Marker, marker_topic, QoSReliabilityPolicy.BEST_EFFORT)
@@ -300,7 +304,16 @@ class detect_faces(Node):
 		x_avg = np.sum(circle_indices[1]) / len(circle_indices[1])
 		y_avg = np.sum(circle_indices[0]) / len(circle_indices[0])
 
-		print("X: ", x_avg, "Y: ", y_avg)
+		direction = Twist()
+		direction.linear.x = 2.0
+		direction.linear.y = 0.0
+		direction.linear.z = 0.0
+		direction.angular.x = 0.0
+		direction.angular.y = 0.0
+		direction.angular.z = 1.8
+		self.parking_pub.publish(direction)
+
+		# print("X: ", x_avg, "Y: ", y_avg)
 
 		cv2.imshow("parking", segmented_circle)
 		key = cv2.waitKey(1)
