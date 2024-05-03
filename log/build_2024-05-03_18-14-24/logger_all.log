@@ -1,0 +1,270 @@
+[1.335s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[1.335s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7c0b35ad67a0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7c0b35ad4a30>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7c0b35ad4a30>>)
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[1.399s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[1.399s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/mu/Documents/RINS/project/RINSproject'
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[1.400s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[1.411s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[1.412s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extensions ['ignore', 'ignore_ament_install']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extension 'ignore'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extension 'ignore_ament_install'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extensions ['colcon_pkg']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extension 'colcon_pkg'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extensions ['colcon_meta']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extension 'colcon_meta'
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extensions ['ros']
+[1.413s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial3) by extension 'ros'
+[1.417s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dis_tutorial3' with type 'ros.ament_cmake' and name 'dis_tutorial3'
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extensions ['ignore', 'ignore_ament_install']
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extension 'ignore'
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extension 'ignore_ament_install'
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extensions ['colcon_pkg']
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extension 'colcon_pkg'
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extensions ['colcon_meta']
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extension 'colcon_meta'
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extensions ['ros']
+[1.417s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial4) by extension 'ros'
+[1.418s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dis_tutorial4' with type 'ros.ament_cmake' and name 'dis_tutorial4'
+[1.418s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extensions ['ignore', 'ignore_ament_install']
+[1.418s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extension 'ignore'
+[1.418s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extension 'ignore_ament_install'
+[1.418s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extensions ['colcon_pkg']
+[1.418s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extension 'colcon_pkg'
+[1.419s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extensions ['colcon_meta']
+[1.419s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extension 'colcon_meta'
+[1.419s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extensions ['ros']
+[1.419s] Level 1:colcon.colcon_core.package_identification:_identify(src/dis_tutorial7) by extension 'ros'
+[1.419s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dis_tutorial7' with type 'ros.ament_cmake' and name 'dis_tutorial7'
+[1.419s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[1.419s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[1.420s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[1.420s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[1.420s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[1.541s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[1.541s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.582s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/mu/colcon_ws/install
+[1.628s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 411 installed packages in /opt/ros/humble
+[1.630s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_args' from command line to 'None'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_target' from command line to 'None'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_clean_cache' from command line to 'False'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_clean_first' from command line to 'False'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'cmake_force_configure' from command line to 'False'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'ament_cmake_args' from command line to 'None'
+[1.756s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'catkin_cmake_args' from command line to 'None'
+[1.757s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial3' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.757s] DEBUG:colcon.colcon_core.verb:Building package 'dis_tutorial3' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3', 'merge_install': False, 'path': '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial3', 'symlink_install': False, 'test_result_base': None}
+[1.776s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_args' from command line to 'None'
+[1.776s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_target' from command line to 'None'
+[1.776s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.776s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_clean_cache' from command line to 'False'
+[1.777s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_clean_first' from command line to 'False'
+[1.777s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'cmake_force_configure' from command line to 'False'
+[1.777s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'ament_cmake_args' from command line to 'None'
+[1.777s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'catkin_cmake_args' from command line to 'None'
+[1.777s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial4' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.777s] DEBUG:colcon.colcon_core.verb:Building package 'dis_tutorial4' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4', 'merge_install': False, 'path': '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial4', 'symlink_install': False, 'test_result_base': None}
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_args' from command line to 'None'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_target' from command line to 'None'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_clean_cache' from command line to 'False'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_clean_first' from command line to 'False'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'cmake_force_configure' from command line to 'False'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'ament_cmake_args' from command line to 'None'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'catkin_cmake_args' from command line to 'None'
+[1.798s] Level 5:colcon.colcon_core.verb:set package 'dis_tutorial7' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.798s] DEBUG:colcon.colcon_core.verb:Building package 'dis_tutorial7' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7', 'merge_install': False, 'path': '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial7', 'symlink_install': False, 'test_result_base': None}
+[1.817s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.839s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.839s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial3' with build type 'ament_cmake'
+[1.839s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial3'
+[1.860s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.861s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.861s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.920s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial4' with build type 'ament_cmake'
+[1.920s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial4'
+[1.939s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.939s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.004s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial7' with build type 'ament_cmake'
+[2.004s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial7'
+[2.027s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.027s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.107s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3 -- -j16 -l16
+[2.112s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4 -- -j16 -l16
+[2.120s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7 -- -j16 -l16
+[2.165s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3 -- -j16 -l16
+[2.168s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4 -- -j16 -l16
+[2.177s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7 -- -j16 -l16
+[2.206s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3
+[2.210s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4
+[2.211s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7
+[2.222s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial4)
+[2.242s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial4
+[2.259s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4' for CMake module files
+[2.259s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4' for CMake config files
+[2.260s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial4', 'cmake_prefix_path')
+[2.278s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.ps1'
+[2.279s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.dsv'
+[2.280s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.sh'
+[2.281s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib'
+[2.281s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/bin'
+[2.281s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib/pkgconfig/dis_tutorial4.pc'
+[2.282s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib/python3.10/site-packages'
+[2.282s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/bin'
+[2.302s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.ps1'
+[2.303s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.dsv'
+[2.303s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.sh'
+[2.304s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.bash'
+[2.304s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.zsh'
+[2.305s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/colcon-core/packages/dis_tutorial4)
+[2.306s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial3)
+[2.307s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3
+[2.328s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3' for CMake module files
+[2.329s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3' for CMake config files
+[2.329s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial3', 'cmake_prefix_path')
+[2.350s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.ps1'
+[2.351s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.dsv'
+[2.352s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.sh'
+[2.353s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib'
+[2.353s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/bin'
+[2.353s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib/pkgconfig/dis_tutorial3.pc'
+[2.354s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib/python3.10/site-packages'
+[2.354s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/bin'
+[2.375s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.ps1'
+[2.375s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.dsv'
+[2.376s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.sh'
+[2.376s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.bash'
+[2.376s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.zsh'
+[2.377s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/colcon-core/packages/dis_tutorial3)
+[2.379s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial7)
+[2.380s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial7
+[2.398s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7' for CMake module files
+[2.399s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7' for CMake config files
+[2.399s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial7', 'cmake_prefix_path')
+[2.420s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.ps1'
+[2.420s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.dsv'
+[2.421s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.sh'
+[2.421s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib'
+[2.422s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/bin'
+[2.422s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib/pkgconfig/dis_tutorial7.pc'
+[2.422s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib/python3.10/site-packages'
+[2.422s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/bin'
+[2.442s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.ps1'
+[2.443s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.dsv'
+[2.443s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.sh'
+[2.443s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.bash'
+[2.444s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.zsh'
+[2.444s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/colcon-core/packages/dis_tutorial7)
+[2.465s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial4)
+[2.483s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4' for CMake module files
+[2.484s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4' for CMake config files
+[2.484s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial4', 'cmake_prefix_path')
+[2.504s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.ps1'
+[2.505s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.dsv'
+[2.505s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/hook/cmake_prefix_path.sh'
+[2.505s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib'
+[2.505s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/bin'
+[2.505s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib/pkgconfig/dis_tutorial4.pc'
+[2.506s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/lib/python3.10/site-packages'
+[2.506s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/bin'
+[2.523s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.ps1'
+[2.524s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.dsv'
+[2.525s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.sh'
+[2.525s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.bash'
+[2.525s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/dis_tutorial4/package.zsh'
+[2.526s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial4/share/colcon-core/packages/dis_tutorial4)
+[2.548s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial3)
+[2.567s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3' for CMake module files
+[2.568s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3' for CMake config files
+[2.569s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial3', 'cmake_prefix_path')
+[2.588s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.ps1'
+[2.589s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.dsv'
+[2.589s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/hook/cmake_prefix_path.sh'
+[2.590s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib'
+[2.590s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/bin'
+[2.590s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib/pkgconfig/dis_tutorial3.pc'
+[2.590s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/lib/python3.10/site-packages'
+[2.591s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/bin'
+[2.614s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.ps1'
+[2.615s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.dsv'
+[2.615s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.sh'
+[2.616s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.bash'
+[2.616s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/dis_tutorial3/package.zsh'
+[2.617s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial3/share/colcon-core/packages/dis_tutorial3)
+[2.636s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dis_tutorial7)
+[2.655s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7' for CMake module files
+[2.655s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7' for CMake config files
+[2.656s] Level 1:colcon.colcon_core.shell:create_environment_hook('dis_tutorial7', 'cmake_prefix_path')
+[2.674s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.ps1'
+[2.674s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.dsv'
+[2.675s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/hook/cmake_prefix_path.sh'
+[2.675s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib'
+[2.675s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/bin'
+[2.675s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib/pkgconfig/dis_tutorial7.pc'
+[2.676s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/lib/python3.10/site-packages'
+[2.676s] Level 1:colcon.colcon_core.environment:checking '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/bin'
+[2.695s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.ps1'
+[2.696s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.dsv'
+[2.696s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.sh'
+[2.696s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.bash'
+[2.697s] INFO:colcon.colcon_core.shell:Creating package script '/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/dis_tutorial7/package.zsh'
+[2.697s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial7/share/colcon-core/packages/dis_tutorial7)
+[2.697s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[2.698s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[2.698s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[2.698s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[2.722s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[2.722s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[2.723s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[2.723s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[2.751s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[2.769s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/mu/Documents/RINS/project/RINSproject/install/local_setup.ps1'
+[2.770s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/mu/Documents/RINS/project/RINSproject/install/_local_setup_util_ps1.py'
+[2.771s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/mu/Documents/RINS/project/RINSproject/install/setup.ps1'
+[2.790s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/mu/Documents/RINS/project/RINSproject/install/local_setup.sh'
+[2.791s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/mu/Documents/RINS/project/RINSproject/install/_local_setup_util_sh.py'
+[2.791s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/mu/Documents/RINS/project/RINSproject/install/setup.sh'
+[2.809s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/mu/Documents/RINS/project/RINSproject/install/local_setup.bash'
+[2.809s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/mu/Documents/RINS/project/RINSproject/install/setup.bash'
+[2.827s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/mu/Documents/RINS/project/RINSproject/install/local_setup.zsh'
+[2.827s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/mu/Documents/RINS/project/RINSproject/install/setup.zsh'

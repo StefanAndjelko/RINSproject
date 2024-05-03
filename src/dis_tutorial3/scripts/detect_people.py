@@ -284,7 +284,6 @@ class detect_faces(Node):
 				self.current_num_of_faces = len(self.detected_faces)
 			self.marker_pub.publish(marker)
 
-
 	def quaternion_to_yaw(self, quaternion):
 		# Convert quaternion to Euler angles (yaw)
 		q = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
@@ -330,19 +329,17 @@ class detect_faces(Node):
 	def calculate_velocity(self, direction):
 		# Convert target vector to polar coordinates
 		# angle = math.atan2(direction[1], direction[0])
+		direction[1] *= -1
 		angle = np.arccos(np.dot(direction, np.array([1, 0])) / np.linalg.norm(direction))
+
+		if direction[0] < 0:
+			angle = -1 * (math.pi - angle)
 
 		# Calculate angular velocity (to align with target direction)
 		angular_velocity = angle - self.current_yaw
 
-		# Ensure angular velocity is within [-pi, pi] range
-		if angular_velocity > math.pi:
-			angular_velocity -= 2 * math.pi
-		elif angular_velocity < -math.pi:
-			angular_velocity += 2 * math.pi
-
 		# Set linear velocity (move forward)
-		linear_velocity = 1.0  # Adjust speed as needed
+		linear_velocity = 0.4  # Adjust speed as needed
 
 		print("linear: ", linear_velocity, "angular: ", angular_velocity)
 
@@ -358,11 +355,13 @@ class detect_faces(Node):
 
 		return angle
 
-
+	## TO DO TO DO TO DO!!! NAPRAVI TAKO DA U ZAVISNOSTI OD TOGA GDE SE NALAZI KAMERA DA DRUGACIJE ODREZE SLIKU
 	def parking_callback(self, data):
-		img = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		img = self.bridge.imgmsg_to_cv2(data, "bgr8") 
 		middle_point_x = np.shape(img)[1] / 2
-		middle_point_y = np.shape(img)[0] / 2
+		middle_point_y = np.shape(img)[0] / 2 + 100
+
+		print(f"middle point [{middle_point_x}, {middle_point_y}]")
 
 		segmented_circle = self.segment_circle(img)
 
@@ -370,16 +369,26 @@ class detect_faces(Node):
 		x_avg = np.sum(circle_indices[1]) / len(circle_indices[1])
 		y_avg = np.sum(circle_indices[0]) / len(circle_indices[0])
 
+		print(f"average [{x_avg}, {y_avg}]")
+
 		move_x = float(x_avg - middle_point_x)
 		move_y = float(y_avg - middle_point_y)
+
+		print(f"direction vector [{move_x}, {move_y}]")
 
 
 		if not math.isnan(move_x) and not math.isnan(move_y):
 			self.searching = False
 			linear, angular = self.calculate_velocity(np.array([move_x, move_y]))
 			direction = Twist()
+			# direction.linear.x = linear
+			direction.angular.z = -0.75 * angular
+			print(f"Rotating for {angular} degrees")
+			self.parking_pub.publish(direction)
+			time.sleep(2)
+
 			direction.linear.x = linear
-			direction.angular.z = angular
+			direction.angular.z = 0.0
 			self.parking_pub.publish(direction)
 			time.sleep(2)
 		elif not self.searching:
@@ -398,7 +407,11 @@ class detect_faces(Node):
 		# print("X: ", x_avg, "Y: ", y_avg)
 
 		cv2.imshow("parking", segmented_circle)
-		key = cv2.waitKey(1)
+		key = cv2.waitKey(1)		# Ensure angular velocity is within [-pi, pi] range
+		# if angular_velocity > math.pi:
+		# 	angular_velocity -= 2 * math.pi
+		# elif angular_velocity < -math.pi:
+		# 	angular_velocity += 2 * math.pi
 		cv2.imshow("ogImage", img)
 		key = cv2.waitKey(1)
 		if key==27:
