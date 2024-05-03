@@ -8,10 +8,14 @@ from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs_py import point_cloud2 as pc2
 
 from visualization_msgs.msg import Marker
+from nav_msgs.msg import Odometry
+from std_msgs.msg import String
 
 from tensorflow.keras.models import load_model
 
 from scipy.spatial.distance import euclidean
+from tf2_ros import TransformStamped
+import tf2_ros
 
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
@@ -20,6 +24,7 @@ import numpy as np
 from ultralytics import YOLO
 
 import math
+import time
 
 from geometry_msgs.msg import Twist
 
@@ -51,8 +56,21 @@ class detect_faces(Node):
 
 		# PARKING		
 		self.parking_sub = self.create_subscription(Image, "/top_camera/rgb/preview/image_raw", self.parking_callback, 10)
+		self.odometry_sub = self.create_subscription(Odometry, '/odom', self.odometry_callback, 10)
 		self.parking_pub = self.create_publisher(Twist, "/cmd_vel", 10)
+		self.arm_command_pub = self.create_publisher(String, "/arm_command", 10)
 
+		arm_msg = String()
+		arm_msg.data = "look_for_parking1"
+		self.arm_command_pub.publish(arm_msg)
+		
+		self.node = rclpy.create_node('robot_controller')
+		self.current_yaw = 0.0
+		self.tf_buffer = tf2_ros.Buffer()
+		self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self.node)
+
+		self.current_pos = 2
+		self.searching = True
 
 		self.marker_pub = self.create_publisher(Marker, marker_topic, QoSReliabilityPolicy.BEST_EFFORT)
 		self.new_face_pub = self.create_publisher(Marker, 'new_face', 10)
@@ -266,10 +284,26 @@ class detect_faces(Node):
 				self.current_num_of_faces = len(self.detected_faces)
 			self.marker_pub.publish(marker)
 
+
+	def quaternion_to_yaw(self, quaternion):
+		# Convert quaternion to Euler angles (yaw)
+		q = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+		roll, pitch, yaw = tf2_ros.transformations.euler_from_quaternion(q)
+		return yaw
+
+	def odometry_callback(self, msg):
+		try:
+			transform = self.tf_buffer.lookup_transform('base_link', 'odom', rclpy.time.Time())
+			quaternion = transform.transform.rotation
+			self.current_yaw = self.quaternion_to_yaw(quaternion)
+		except Exception as e:
+			pass
+			# print("Error:", e)
+
 	def segment_circle(self, image):
 		# Convert image to grayscale
 		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		gray = gray[:-40]
+		gray = gray[:-20]
 		
 		# Apply Gaussian blur to reduce noise
 		blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -293,6 +327,37 @@ class detect_faces(Node):
 		
 		return binary_mask
 
+	def calculate_velocity(self, direction):
+		# Convert target vector to polar coordinates
+		# angle = math.atan2(direction[1], direction[0])
+		angle = np.arccos(np.dot(direction, np.array([1, 0])) / np.linalg.norm(direction))
+
+		# Calculate angular velocity (to align with target direction)
+		angular_velocity = angle - self.current_yaw
+
+		# Ensure angular velocity is within [-pi, pi] range
+		if angular_velocity > math.pi:
+			angular_velocity -= 2 * math.pi
+		elif angular_velocity < -math.pi:
+			angular_velocity += 2 * math.pi
+
+		# Set linear velocity (move forward)
+		linear_velocity = 1.0  # Adjust speed as needed
+
+		print("linear: ", linear_velocity, "angular: ", angular_velocity)
+
+		return linear_velocity, angular_velocity
+
+	def fix_angle(self, current_pos, angle):
+		if current_pos == 2:
+			return angle + math.pi
+		elif current_pos == 3:
+			return angle - math.pi / 2
+		elif currnet_pos == 4:
+			return angle + math.pi / 2
+
+		return angle
+
 
 	def parking_callback(self, data):
 		img = self.bridge.imgmsg_to_cv2(data, "bgr8")
@@ -308,15 +373,28 @@ class detect_faces(Node):
 		move_x = float(x_avg - middle_point_x)
 		move_y = float(y_avg - middle_point_y)
 
-		direction = Twist()
-		direction.linear.x = move_x
-		direction.linear.y = move_y
-		direction.linear.z = 0.0
-		direction.angular.x = 0.0
-		direction.angular.y = 0.0
-		direction.angular.z = 0.0
-		self.parking_pub.publish(direction)
-		time.sleep(2)
+
+		if not math.isnan(move_x) and not math.isnan(move_y):
+			self.searching = False
+			linear, angular = self.calculate_velocity(np.array([move_x, move_y]))
+			direction = Twist()
+			direction.linear.x = linear
+			direction.angular.z = angular
+			self.parking_pub.publish(direction)
+			time.sleep(2)
+		elif not self.searching:
+			goal_arm_pos = String()
+			goal_arm_pos.data = "look_for_parking" + f"{self.current_pos}"
+			print(goal_arm_pos)
+			self.arm_command_pub.publish(goal_arm_pos)
+			print("published")
+			time.sleep(4)
+			self.current_pos += 1
+			if self.current_pos > 4:
+				self.current_pos = 1
+				self.searching = True
+
+		
 		# print("X: ", x_avg, "Y: ", y_avg)
 
 		cv2.imshow("parking", segmented_circle)
