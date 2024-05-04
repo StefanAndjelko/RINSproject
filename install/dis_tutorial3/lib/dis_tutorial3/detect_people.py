@@ -71,6 +71,7 @@ class detect_faces(Node):
 
 		self.current_pos = 2
 		self.searching = True
+		# \PARKING
 
 		self.marker_pub = self.create_publisher(Marker, marker_topic, QoSReliabilityPolicy.BEST_EFFORT)
 		self.new_face_pub = self.create_publisher(Marker, 'new_face', 10)
@@ -302,7 +303,10 @@ class detect_faces(Node):
 	def segment_circle(self, image):
 		# Convert image to grayscale
 		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		gray = gray[:-20]
+		if self.current_pos != 1:
+			gray = gray[20:]
+		else:
+			gray = gray[:-20]
 		
 		# Apply Gaussian blur to reduce noise
 		blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -355,13 +359,13 @@ class detect_faces(Node):
 
 		return angle
 
-
+	## TO DO TO DO TO DO!!! NAPRAVI TAKO DA U ZAVISNOSTI OD TOGA GDE SE NALAZI KAMERA DA DRUGACIJE ODREZE SLIKU
 	def parking_callback(self, data):
-		img = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		img = self.bridge.imgmsg_to_cv2(data, "bgr8") 
 		middle_point_x = np.shape(img)[1] / 2
 		middle_point_y = np.shape(img)[0] / 2 + 100
 
-		print(f"middle point [{middle_point_x}, {middle_point_y}]")
+		# print(f"middle point [{middle_point_x}, {middle_point_y}]")
 
 		segmented_circle = self.segment_circle(img)
 
@@ -369,12 +373,12 @@ class detect_faces(Node):
 		x_avg = np.sum(circle_indices[1]) / len(circle_indices[1])
 		y_avg = np.sum(circle_indices[0]) / len(circle_indices[0])
 
-		print(f"average [{x_avg}, {y_avg}]")
+		# print(f"average [{x_avg}, {y_avg}]")
 
 		move_x = float(x_avg - middle_point_x)
 		move_y = float(y_avg - middle_point_y)
 
-		print(f"direction vector [{move_x}, {move_y}]")
+		# print(f"direction vector [{move_x}, {move_y}]")
 
 
 		if not math.isnan(move_x) and not math.isnan(move_y):
