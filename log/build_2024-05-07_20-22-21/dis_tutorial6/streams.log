@@ -1,0 +1,97 @@
+[0.155s] Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6 -- -j16 -l16
+[0.185s] -- Found ament_cmake: 1.3.8 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.288s] -- Found rclcpp: 16.0.8 (/opt/ros/humble/share/rclcpp/cmake)
+[0.319s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.322s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.329s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.340s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.358s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.409s] -- Found rmw_implementation_cmake: 6.1.1 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.410s] -- Found rmw_fastrtps_cpp: 6.2.6 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.526s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.643s] -- Found rclpy: 3.3.12 (/opt/ros/humble/share/rclpy/cmake)
+[0.643s] -- Found geometry_msgs: 4.2.3 (/opt/ros/humble/share/geometry_msgs/cmake)
+[0.675s] -- Found visualization_msgs: 4.2.3 (/opt/ros/humble/share/visualization_msgs/cmake)
+[0.832s] -- Found tf2: 0.25.6 (/opt/ros/humble/share/tf2/cmake)
+[0.839s] -- Found tf2_geometry_msgs: 0.25.6 (/opt/ros/humble/share/tf2_geometry_msgs/cmake)
+[0.843s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[0.844s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[0.844s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[1.091s] -- Found pcl_conversions: 2.4.0 (/opt/ros/humble/share/pcl_conversions/cmake)
+[1.189s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[1.219s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[1.392s] -- Found Eigen3: /usr/include/eigen3 (found version "3.4.0") 
+[1.525s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[1.530s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[1.531s] [0m** WARNING ** io features related to pcap will be disabled[0m
+[1.646s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[1.651s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[1.656s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[1.770s] -- Found Qhull version 8.0.2
+[1.882s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[1.988s] -- looking for PCL_COMMON
+[1.988s] -- looking for PCL_KDTREE
+[1.988s] -- looking for PCL_OCTREE
+[1.988s] -- looking for PCL_SEARCH
+[1.989s] -- looking for PCL_SAMPLE_CONSENSUS
+[1.989s] -- looking for PCL_FILTERS
+[1.989s] -- looking for PCL_2D
+[1.989s] -- looking for PCL_GEOMETRY
+[1.989s] -- looking for PCL_IO
+[1.990s] -- looking for PCL_FEATURES
+[1.990s] -- looking for PCL_ML
+[1.990s] -- looking for PCL_SEGMENTATION
+[1.990s] -- looking for PCL_VISUALIZATION
+[1.991s] -- looking for PCL_SURFACE
+[1.991s] -- looking for PCL_REGISTRATION
+[1.991s] -- looking for PCL_KEYPOINTS
+[1.992s] -- looking for PCL_TRACKING
+[1.992s] -- looking for PCL_RECOGNITION
+[1.992s] -- looking for PCL_STEREO
+[1.992s] -- looking for PCL_APPS
+[1.993s] -- looking for PCL_IN_HAND_SCANNER
+[1.993s] -- looking for PCL_MODELER
+[1.993s] -- looking for PCL_POINT_CLOUD_EDITOR
+[1.993s] -- looking for PCL_OUTOFCORE
+[1.994s] -- looking for PCL_PEOPLE
+[2.165s] -- Configuring done
+[2.245s] -- Generating done
+[2.247s] -- Build files have been written to: /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6
+[2.277s] [35m[1mConsolidate compiler generated dependencies of target pcl_forwarder[0m
+[2.277s] [35m[1mConsolidate compiler generated dependencies of target planes[0m
+[2.277s] [35m[1mConsolidate compiler generated dependencies of target cylinder_segmentation[0m
+[2.305s] [ 16%] [32mBuilding CXX object CMakeFiles/pcl_forwarder.dir/src/forwarder.cpp.o[0m
+[2.307s] [ 33%] [32mBuilding CXX object CMakeFiles/planes.dir/src/planes.cpp.o[0m
+[2.310s] [ 50%] [32mBuilding CXX object CMakeFiles/cylinder_segmentation.dir/src/cylinder_segmentation.cpp.o[0m
+[10.893s] [ 66%] [32m[1mLinking CXX executable pcl_forwarder[0m
+[11.476s] [ 66%] Built target pcl_forwarder
+[11.524s] [ 83%] [32m[1mLinking CXX executable planes[0m
+[12.508s] [ 83%] Built target planes
+[13.522s] [100%] [32m[1mLinking CXX executable cylinder_segmentation[0m
+[15.566s] [100%] Built target cylinder_segmentation
+[15.576s] Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6 -- -j16 -l16
+[15.605s] Invoking command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6
+[15.611s] -- Install configuration: ""
+[15.611s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/pcl_forwarder
+[15.616s] -- Set runtime path of "/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/pcl_forwarder" to ""
+[15.616s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/planes
+[15.622s] -- Set runtime path of "/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/planes" to ""
+[15.622s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/cylinder_segmentation
+[15.628s] -- Set runtime path of "/home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/cylinder_segmentation" to ""
+[15.628s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/lib/dis_tutorial6/detect_rings.py
+[15.628s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/ament_index/resource_index/package_run_dependencies/dis_tutorial6
+[15.628s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/ament_index/resource_index/parent_prefix_path/dis_tutorial6
+[15.628s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/environment/ament_prefix_path.sh
+[15.629s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/environment/ament_prefix_path.dsv
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/environment/path.sh
+[15.629s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/environment/path.dsv
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/local_setup.bash
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/local_setup.sh
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/local_setup.zsh
+[15.629s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/local_setup.dsv
+[15.629s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/package.dsv
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/ament_index/resource_index/packages/dis_tutorial6
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/cmake/dis_tutorial6Config.cmake
+[15.629s] -- Up-to-date: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/cmake/dis_tutorial6Config-version.cmake
+[15.629s] -- Installing: /home/mu/Documents/RINS/project/RINSproject/install/dis_tutorial6/share/dis_tutorial6/package.xml
+[15.631s] Invoked command in '/home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial6

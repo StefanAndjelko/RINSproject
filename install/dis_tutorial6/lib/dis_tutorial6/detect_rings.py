@@ -39,6 +39,10 @@ class RingDetector(Node):
         self.image_sub = self.create_subscription(Image, "/oakd/rgb/preview/image_raw", self.image_callback, 1)
         self.depth_sub = self.create_subscription(Image, "/oakd/rgb/preview/depth", self.depth_callback, 1)
 
+        self.found_on_rgb = False
+        self.found_on_depth = False
+        self.is_green_circle = False
+
         # Publiser for the visualization markers
         # self.marker_pub = self.create_publisher(Marker, "/ring", QoSReliabilityPolicy.BEST_EFFORT)
 
@@ -51,85 +55,147 @@ class RingDetector(Node):
         #cv2.namedWindow("Detected rings", cv2.WINDOW_NORMAL)
         #cv2.namedWindow("Depth window", cv2.WINDOW_NORMAL)  
 
-    def detect_circles(image_path):
-        # Read the image
-        img = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        if img is None:
-            print("Error: Image could not be read.")
-            return
+    def is_circle_present(self, gray):
+        # Load image and convert to grayscale
 
-        # Convert to grayscale
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # Apply GaussianBlur to reduce noise
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+        # Apply edge detection or thresholding to find contours
+        _, thresh = cv2.threshold(blurred, 127, 255, cv2.THRESH_BINARY)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for cnt in contours:
+            # Calculate bounding rectangle for the contour
+            x, y, w, h = cv2.boundingRect(cnt)
+            aspect_ratio = float(w) / h  # Aspect ratio near 1 indicates a square or circle
+
+            # Calculate area and perimeter
+            area = cv2.contourArea(cnt)
+            perimeter = cv2.arcLength(cnt, True)
+            
+            # Circularity: defined as 4*pi*(Area/Perimeter^2)
+            # Closer to 1 indicates a perfect circle
+            circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
+
+            # Check if the contour is a circle
+            if circularity > 0.8 and 0.9 < aspect_ratio < 1.1:
+                # This contour is likely a circle
+                return True
+        
+        # If no contour is identified as a circle, return False
+        return False
+
+    def detect_circles(self, gray):
 
         # Apply GaussianBlur to reduce noise and improve circle detection
         gray = cv2.GaussianBlur(gray, (9, 9), 2)
 
         # Detect circles using HoughCircles
-        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
-                                param1=50, param2=30, minRadius=0, maxRadius=0)
+        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=2, minDist=60,
+                                param1=90, param2=50, minRadius=0, maxRadius=0)
+
+        # value = self.is_circle_present(gray)
 
         # Ensure at least some circles were found
-        if circles is not None:
-            circles = np.uint16(np.around(circles))
-            for i in circles[0, :]:
-                # Draw the outer circle
-                cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
-                # Draw the center of the circle
-                cv2.circle(img, (i[0], i[1]), 2, (0, 0, 255), 3)
+        if circles is not None and value:
+            # circles = np.uint16(np.around(circles))
+            self.found_on_rgb = True
+            # for i in circles[0, :]:
+            #     # Draw the outer circle
+            #     cv2.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
+            #     # Draw the center of the circle
+            #     cv2.circle(img, (i[0], i[1]), 2, (0, 0, 255), 3)
+
+        else:
+            self.found_on_rgb = False
 
         # Display the result
-        cv2.imshow('Detected Circles', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()      
+        # cv2.imshow('Detected Circles', img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
+    def check_in_line(self, green_image):
+        counter = 0
+        for line in green_image:
+            found_green = False
+            found_black = False
+            for x in line:
+                if x[1] != 0 and not found_green:
+                    found_green = True
+                elif x[1] == 0 and found_green:
+                    found_black = True
+                elif x[1] != 0 and found_black:
+                    counter += 1
+            if counter > 30:
+                return True
+
+        return False
+
 
     def image_callback(self, data):
-        self.get_logger().info(f"I got a new image! Will try to find rings...")
+            self.get_logger().info(f"I got a new image! Will try to find rings...")
+        # cv2.imshow('Detected Circles', img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()  
+            try:
+                cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            except CvBridgeError as e:
+                print(e)
 
-        try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-            print(e)
+            blue = cv_image[:,:,0]
+            green = cv_image[:,:,1]
+            red = cv_image[:,:,2]
+
+            hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+
+            # Define range of green color in HSV
+            lower_green = np.array([40, 40, 40])
+            upper_green = np.array([70, 255, 255])
+
+            # Threshold the HSV image to get only green colors
+            mask = cv2.inRange(hsv, lower_green, upper_green)
+
+            # Bitwise-AND mask and original image
+            green_image = cv2.bitwise_and(cv_image, cv_image, mask=mask)
+            cv2.imshow('Green Objects', green_image)
+            og_image = cv_image
+            self.is_green_circle = self.check_in_line(green_image)
+
+            # Tranform image to grayscale
+            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
+            gray = gray[:gray.shape[0] // 4]
+            # gray = red
+
+            # self.detect_circles(gray)
+
+            value = self.is_circle_present(gray)
+            if value:
+                self.found_on_rgb = True
 
 
-        # DATA PREPROCESSING
+            # Apply Gaussian Blur
+            # gray = cv2.GaussianBlur(gray,(3,3),0)
 
-        blue = cv_image[:,:,0]
-        green = cv_image[:,:,1]
-        red = cv_image[:,:,2]
+            # Do histogram equalization
+            # gray = cv2.equalizeHist(gray)
 
-        # Tranform image to grayscale
-        gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
-        # gray = red
+            # Binarize the image, there are different ways to do it
+            #ret, thresh = cv2.threshold(img, 50, 255, 0)
+            #ret, thresh = cv2.threshold(img, 70, 255, cv2.THRESH_BINARY)
+            # thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 15, 30)
+            # cv2.imshow("GrayscaleImage", thresh)
+            # cv2.waitKey(1)
 
-        # Apply Gaussian Blur
-        # gray = cv2.GaussianBlur(gray,(3,3),0)
+            # Extract contours
+            # contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
-        # Do histogram equalization
-        # gray = cv2.equalizeHist(gray)
+            # Example of how to draw the contours, only for visualization purposes
+            # cv2.drawContours(gray, contours, -1, (255, 0, 0), 3)
+            # cv2.imshow("Detected contours", gray)
+            # cv2.waitKey(1)
+            cv2.imshow("Camera Image", og_image)
 
-        # Binarize the image, there are different ways to do it
-        #ret, thresh = cv2.threshold(img, 50, 255, 0)
-        #ret, thresh = cv2.threshold(img, 70, 255, cv2.THRESH_BINARY)
-        thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 15, 30)
-        cv2.imshow("Binary Image", thresh)
-        cv2.waitKey(1)
-
-        # Cropping the image to only the top half
-        height = thresh.shape[0]
-        top_half = thresh[:height//2, :]  # Divide height by 2 to get the top half
-
-        # Extract contours
-        contours, hierarchy = cv2.findContours(top_half, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Example of how to draw the contours, only for visualization purposes
-        cv2.drawContours(gray, contours, -1, (255, 0, 0), 3)
-        #cv2.imshow("Detected contours", gray)
-        #cv2.waitKey(1)
-
-        # CHECK IF THERE ARE RINGS IN EXTRACTED DATA
-        cv_image = self.ring_detection(contours, cv_image)
-
-        self.both_sensors_callback(cv_image, "RGB")
 
 
     def depth_callback(self, data):
@@ -174,10 +240,18 @@ class RingDetector(Node):
             valid_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 200 and cv2.contourArea(cnt) < 700 ]
 
             if len(valid_contours)>0:
+                self.found_on_depth = True
+
+            else:
+                self.found_on_depth = False
+
+
+            print(self.found_on_depth, self.is_green_circle)
+            if self.found_on_depth and self.is_green_circle:
                 # Draw contours on the depth image for visualization
                 depth_image_detected = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
                 cv2.drawContours(depth_image_detected, valid_contours, -1, (0, 255, 0), 2)
-            self.both_sensors_callback(depth_image_detected, "depth")
+                cv2.imshow("Detected ring", depth_image_detected)
 
     def both_sensors_callback(self, image,source):
         if source=="depth":
