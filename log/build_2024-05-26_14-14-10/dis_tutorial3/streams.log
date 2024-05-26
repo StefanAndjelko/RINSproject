@@ -1,0 +1,6 @@
+[0.113s] Invoking command in '/home/mu/RINSproject/build/dis_tutorial3': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/RINSproject/build/dis_tutorial3 -- -j16 -l16
+[0.133s] [0mCMake Error: The current CMakeCache.txt directory /home/mu/RINSproject/build/dis_tutorial3/CMakeCache.txt is different than the directory /home/mu/Documents/RINS/project/RINSproject/build/dis_tutorial3 where CMakeCache.txt was created. This may result in binaries being created in the wrong place. If you are not sure, reedit the CMakeCache.txt[0m
+[0.148s] [0mCMake Error: The source directory "/home/mu/Documents/RINS/project/RINSproject/src/dis_tutorial3" does not exist.
+[0.148s] Specify --help for usage, or press the help button on the CMake GUI.[0m
+[0.151s] gmake: *** [Makefile:226: cmake_check_build_system] Error 1
+[0.154s] Invoked command in '/home/mu/RINSproject/build/dis_tutorial3' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/mu/RINSproject/build/dis_tutorial3 -- -j16 -l16

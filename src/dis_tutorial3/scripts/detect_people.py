@@ -119,8 +119,49 @@ class detect_faces(Node):
 
 		try:
 			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-
+			
 			# self.get_logger().info(f"Running inference on image...") ### THIS PRINTS IF THE FACE DETECT IS RUNNING
+
+			################## DETECT MONA LISA - TO BE CALLED WHEN YOU WALK UP TO IMAGE ###################
+			
+			# Define the target RGB values and tolerance
+			colors = [
+				(70, 75, 47),
+				(51, 37, 31),
+				(188, 157, 79),
+				(22, 16, 27),
+				(61, 34, 18)
+			]
+			margin = 2
+
+			# Convert BGR image to RGB
+			img_rgb = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+
+			# Mask to check presence of each color within the margin
+			found_colors = []
+			for color in colors:
+				lower_bound = np.array([c - margin for c in color])
+				upper_bound = np.array([c + margin for c in color])
+				
+				# Create a mask for the current color within the margin
+				mask = cv2.inRange(img_rgb, lower_bound, upper_bound)
+				
+				# Check if any pixel matches the color
+				if np.any(mask):
+					found_colors.append(color)
+					#print(f"Color {color} is present within margin.")
+				#else:
+					#print(f"Color {color} is not present.")
+
+			# Check if all specified colors are found
+			if len(found_colors) == len(colors):
+				is_lisa=True
+				print("All specified colors are present within the margin.")
+			else:
+				is_lisa=False
+				print("Not all specified colors are found.")
+
+			##########################################################
 
 			# run inference
 			res = self.model.predict(cv_image, imgsz=(256, 320), show=False, verbose=False, classes=[0], device=self.device)
@@ -140,18 +181,16 @@ class detect_faces(Node):
 
 				face_roi = cv_image[int(y1):int(y2), int(x1):int(x2)]
 				width = len(face_roi[0])
-				print(width)
-
 				keypoints, descriptors = self.detect_face(face_roi)
 
 				if width > 28 and not self.is_face_detected(descriptors):
 					self.detected_faces.append(descriptors)
 					# self.new_face_pub.publish(Marker())
 					cv2.imshow("detected face", face_roi)
-					print("New face detected!")
+					#print("New face detected!")
 							
-				else:
-					print("Face already detected!")
+				#else:
+					#print("Face already detected!")
 
 
 				# print("ALL FACES DETECTED: ", len(self.detected_faces))
