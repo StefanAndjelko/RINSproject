@@ -30,11 +30,13 @@ from irobot_create_msgs.action import Dock, Undock
 from irobot_create_msgs.msg import DockStatus
 
 from visualization_msgs.msg import Marker
+from nav_msgs.msg import Odometry
 
 import tf2_geometry_msgs as tfg
 from tf2_ros import TransformException
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
+import tf_transformations
 
 import rclpy
 from rclpy.action import ActionClient
@@ -84,6 +86,7 @@ class RobotCommander(Node):
         self.face_counter = 0
         self.new_face_detected_status = [0, 0, 0]
         self.faces_to_visit = []
+        self.current_yaw = 0.0
 
         # ROS2 subscribers
         self.create_subscription(DockStatus,
@@ -99,6 +102,9 @@ class RobotCommander(Node):
         self.face_location_sub = self.create_subscription(Marker, 'people_marker', self.faceRecognizedCallback, 10)
 
         self.is_new_face = self.create_subscription(Marker, 'new_face', self.newFaceCallback, 10)
+
+        self.odometry_sub = self.create_subscription(Odometry, '/odom', self.odometry_callback, 10)
+
         
         # ROS2 publishers
         self.initial_pose_pub = self.create_publisher(PoseWithCovarianceStamped,
@@ -364,6 +370,7 @@ class RobotCommander(Node):
             #     self.should_move = True
             #     # self.currentGoalPos = [x, y]
         elif msg.id == 1:
+            print("currentNormal: ", msg)
             self.currentNormal = [msg.pose.position.x, msg.pose.position.y, msg.pose.position.z]
 
     def newFaceCallback(self, msg):
@@ -372,6 +379,20 @@ class RobotCommander(Node):
 
 
         # self.moveRobotToPosition(x, y)
+
+    def quaternion_to_yaw(self, quaternion):
+        # Convert quaternion to Euler angles (yaw)
+        q = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+        roll, pitch, yaw = tf_transformations.euler_from_quaternion(q)
+        return yaw
+
+    def odometry_callback(self, msg):
+        try:
+            transform = self.tf_buffer.lookup_transform('base_link', 'odom', rclpy.time.Time())
+            quaternion = transform.transform.rotation
+            self.current_yaw = self.quaternion_to_yaw(quaternion)
+        except Exception as e:
+            self.get_logger().error(f"Error: {e}")
 
     def transformCoordinates(self, x, y):
         # Create a PointStamped in the /base_link frame of the robot
@@ -407,7 +428,23 @@ class RobotCommander(Node):
 
             return None
 
+def polar_to_cartesian(r, theta):
+    theta = math.atan2(math.sin(theta), math.cos(theta))
+    x = r * math.cos(theta)
+    y = r * math.sin(theta)
+    return x, y
 
+def calculate_angle(r, theta, x2, y2):
+    x1, y1 = polar_to_cartesian(r, theta)
+    dot_product = x1 * x2 + y1 * y2
+    magnitude_a = math.sqrt(x1**2 + y1**2)
+    magnitude_b = math.sqrt(x2**2 + y2**2)
+    if magnitude_a == 0 or magnitude_b == 0:
+        return 0
+    cos_angle = dot_product / (magnitude_a * magnitude_b)
+    angle = math.acos(cos_angle)
+    return angle
+    
 def main(args=None):
     
     rclpy.init(args=args)
@@ -455,6 +492,8 @@ def main(args=None):
                 cancel = rc.goal_handle.cancel_goal_async()
                 rclpy.spin_until_future_complete(rc, cancel, timeout_sec=1.0)
 
+                time.sleep(2)
+
                 goal_pose = PoseStamped()
                 goal_pose.header.frame_id = 'map'
                 goal_pose.header.stamp = rc.get_clock().now().to_msg()
@@ -462,16 +501,19 @@ def main(args=None):
                 goal_pose.pose.position.x = transCoords.point.x
                 goal_pose.pose.position.y = transCoords.point.y
                 yaw_degrees = 0.0
+                print("CURRENT ROTATION", rc.current_yaw)
+                print("NORMAL: ", rc.currentNormal)
                 if len(rc.currentNormal) < 3:
                     rc.currentNormal = [0, 0, 0]
                 else:
-                    yaw_degrees = np.arccos(np.dot(np.array([0, 1, 0]), rc.currentNormal))
-                    yaw_degrees = float(np.degrees(yaw_degrees))
+                    yaw_degrees = calculate_angle(1, 0, rc.currentNormal[0], rc.currentNormal[1])
+                    yaw_degrees -= math.pi / 2
+                    # yaw_degrees += math.degrees(rc.current_yaw)
                     print("YAW", yaw_degrees)
 
 
-                goal_pose.pose.position.x += rc.currentNormal[0] * 0.01
-                goal_pose.pose.position.y += rc.currentNormal[1] * 0.01
+                goal_pose.pose.position.x += rc.currentNormal[1] * 0.01
+                goal_pose.pose.position.y += rc.currentNormal[0] * 0.01
                 # goal_pose.pose.orientation = rc.YawToQuaternion(0)
                 rc.goToPose(goal_pose)
                 
@@ -481,10 +523,13 @@ def main(args=None):
                     rc.info("Going to the face location...")
                     time.sleep(1)
                 
-                # rc.spin(0)
-                # while not rc.isTaskComplete():
-                #     rc.info("Rotating to zero...")
-                #     time.sleep(1)
+                rc.spin(-rc.current_yaw)
+                while not rc.isTaskComplete():
+                    rc.info("Rotating to zero...")
+                    time.sleep(1)
+
+                time.sleep(2)
+                print("NOW ROTATING TO FACE")
 
                 
                 rc.spin(yaw_degrees)
@@ -492,10 +537,12 @@ def main(args=None):
                     rc.info("Rotating towards face...")
                     time.sleep(1)
 
-                mixer.init()
-                sound = mixer.Sound("hello.wav")
-                sound.play()
-                time.sleep(5)
+                time.sleep(2)
+
+                # mixer.init()
+                # sound = mixer.Sound("hello.wav")
+                # sound.play()
+                # time.sleep(5)
 
                 rc.faceDetected = False
                 rc.should_move = False
@@ -503,12 +550,12 @@ def main(args=None):
 
                 rc.info("SAID HELLO")
 
-                if rc.face_counter >= 3:
-                    print("THREE FACES DETECTED, STOPPING")
-                    stopping = rc.goal_handle.cancel_goal_async()
-                    rclpy.spin_until_future_complete(rc, stopping, timeout_sec=1.0)
-                    should_stop = True
-                    break
+                # if rc.face_counter >= 3:
+                #     print("THREE FACES DETECTED, STOPPING")
+                #     stopping = rc.goal_handle.cancel_goal_async()
+                #     rclpy.spin_until_future_complete(rc, stopping, timeout_sec=1.0)
+                #     should_stop = True
+                #     break
 
                 goal_pose.pose.position.x = point[0]
                 goal_pose.pose.position.y = point[1]

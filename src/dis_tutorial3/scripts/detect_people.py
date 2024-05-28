@@ -4,6 +4,8 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, QoSReliabilityPolicy
 
+from rclpy.duration import Duration as Dur ###!!!
+
 from sensor_msgs.msg import Image, PointCloud2
 from sensor_msgs_py import point_cloud2 as pc2
 
@@ -16,6 +18,8 @@ from tensorflow.keras.models import load_model
 from scipy.spatial.distance import euclidean
 from tf2_ros import TransformStamped
 import tf2_ros
+from tf2_ros import Buffer, TransformListener, LookupException, ConnectivityException, ExtrapolationException, TransformException
+
 
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
@@ -26,7 +30,7 @@ from ultralytics import YOLO
 import math
 import time
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, PointStamped
 
 
 # from rclpy.parameter import Parameter
@@ -55,6 +59,11 @@ class detect_faces(Node):
 		self.pointcloud_sub = self.create_subscription(PointCloud2, "/oakd/rgb/preview/depth/points", self.pointcloud_callback, qos_profile_sensor_data)
 
 		# PARKING		
+		# self.node = rclpy.create_node('robot_controller')
+		self.current_yaw = 0.0
+		self.tf_buffer = tf2_ros.Buffer()
+		self.tf_listener = TransformListener(self.tf_buffer, self)
+
 		self.parking_sub = self.create_subscription(Image, "/top_camera/rgb/preview/image_raw", self.parking_callback, 10)
 		self.odometry_sub = self.create_subscription(Odometry, '/odom', self.odometry_callback, 10)
 		self.parking_pub = self.create_publisher(Twist, "/cmd_vel", 10)
@@ -64,10 +73,6 @@ class detect_faces(Node):
 		arm_msg.data = "look_for_parking1"
 		self.arm_command_pub.publish(arm_msg)
 		
-		self.node = rclpy.create_node('robot_controller')
-		self.current_yaw = 0.0
-		self.tf_buffer = tf2_ros.Buffer()
-		self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self.node)
 
 		self.current_pos = 2
 		self.searching = True
@@ -119,53 +124,14 @@ class detect_faces(Node):
 
 		try:
 			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-			
+
 			# self.get_logger().info(f"Running inference on image...") ### THIS PRINTS IF THE FACE DETECT IS RUNNING
 
-			################## DETECT MONA LISA - TO BE CALLED WHEN YOU WALK UP TO IMAGE ###################
-			
-			# Define the target RGB values and tolerance
-			colors = [
-				(70, 75, 47),
-				(51, 37, 31),
-				(188, 157, 79),
-				(22, 16, 27),
-				(61, 34, 18)
-			]
-			margin = 2
-
-			# Convert BGR image to RGB
-			img_rgb = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
-
-			# Mask to check presence of each color within the margin
-			found_colors = []
-			for color in colors:
-				lower_bound = np.array([c - margin for c in color])
-				upper_bound = np.array([c + margin for c in color])
-				
-				# Create a mask for the current color within the margin
-				mask = cv2.inRange(img_rgb, lower_bound, upper_bound)
-				
-				# Check if any pixel matches the color
-				if np.any(mask):
-					found_colors.append(color)
-					#print(f"Color {color} is present within margin.")
-				#else:
-					#print(f"Color {color} is not present.")
-
-			# Check if all specified colors are found
-			if len(found_colors) == len(colors):
-				is_lisa=True
-				print("All specified colors are present within the margin.")
-			else:
-				is_lisa=False
-				print("Not all specified colors are found.")
-
-			##########################################################
-
 			# run inference
-			res = self.model.predict(cv_image, imgsz=(256, 320), show=False, verbose=False, classes=[0], device=self.device)
+			# print("running face detection!")
 
+			res = self.model.predict(cv_image, imgsz=(256, 320), show=False, verbose=False, classes=[0], device=self.device)
+			# print("face detection ended!")
 			# iterate over results
 			for x in res:
 				bbox = x.boxes.xyxy
@@ -181,16 +147,18 @@ class detect_faces(Node):
 
 				face_roi = cv_image[int(y1):int(y2), int(x1):int(x2)]
 				width = len(face_roi[0])
+
 				keypoints, descriptors = self.detect_face(face_roi)
 
 				if width > 28 and not self.is_face_detected(descriptors):
 					self.detected_faces.append(descriptors)
 					# self.new_face_pub.publish(Marker())
 					cv2.imshow("detected face", face_roi)
-					#print("New face detected!")
+					# print("New face detected!")
 							
-				#else:
-					#print("Face already detected!")
+				else:
+					pass
+					# print("Face already detected!")
 
 
 				# print("ALL FACES DETECTED: ", len(self.detected_faces))
@@ -220,6 +188,55 @@ class detect_faces(Node):
 			
 		except CvBridgeError as e:
 			print(e)
+
+	def quaternion_to_yaw(self, quaternion):
+		# Convert quaternion to Euler angles (yaw)
+		q = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+		roll, pitch, yaw = tf2_ros.transformations.euler_from_quaternion(q)
+		return yaw
+
+	def odometry_callback(self, msg):
+		try:
+			now = rclpy.time.Time()
+			transform = self.tf_buffer.lookup_transform('base_link', 'odom', now)
+			quaternion = transform.transform.rotation
+			self.current_yaw = self.quaternion_to_yaw(quaternion)
+		except Exception as e:
+			pass
+
+	def transformCoordinates(self, x, y):
+		# Create a PointStamped in the /base_link frame of the robot
+		# The point is located 0.5m in from of the robot
+		# "Stamped" means that the message type contains a Header
+		point_in_robot_frame = PointStamped()
+		point_in_robot_frame.header.frame_id = "/base_link"
+		point_in_robot_frame.header.stamp = self.get_clock().now().to_msg()
+
+		point_in_robot_frame.point.x = x
+		point_in_robot_frame.point.y = y
+		point_in_robot_frame.point.z = 0.
+
+		# Now we look up the transform between the base_link and the map frames
+		# and then we apply it to our PointStamped
+		time_now = rclpy.time.Time()
+		timeout = Dur(seconds=0.1)
+		try:
+			# An example of how you can get a transform from /base_link frame to the /map frame
+			# as it is at time_now, wait for timeout for it to become available
+			trans = self.tf_buffer.lookup_transform("map", "base_link", time_now, timeout)
+			self.get_logger().info(f"Looks like the transform is available.")
+
+			# Now we apply the transform to transform the point_in_robot_frame to the map frame
+			# The header in the result will be copied from the Header of the transform
+			point_in_map_frame = tfg.do_transform_point(point_in_robot_frame, trans)
+			self.get_logger().info(f"We transformed a PointStamped!")
+
+			return point_in_map_frame
+
+		except TransformException as te:
+			self.get_logger().info(f"Cound not get the transform: {te}")
+
+		return None
 
 	def pointcloud_callback(self, data):
 
@@ -265,21 +282,35 @@ class detect_faces(Node):
 			marker.pose.position.y = float(d[1])
 			marker.pose.position.z = float(d[2])
 
+			print("DDDD", d)
+
 			
 
-			x2 = x + 5
-			y2 = y + 5
+			x2 = x + 20
+			y2 = y + 20
 
 			if x2 > len(a[0]) - 1:
-				x2 -= 10
+				x2 -= 40
 
 			if y2 > len(a) - 1:
-				y2 -= 10
+				y2 -= 40
 
 			d = np.array(d)
 			# print("DDDDDDDD", d)
 			one_point = np.array(a[y2, x,:])		
 			another_point = np.array(a[y, x2,:])
+
+
+			# transCoords1 = self.transformCoordinates(float(d[0]), float(d[1]))
+			# transCoords2 = self.transformCoordinates(float(one_point[0]), float(one_point[1])) 
+			# transCoords3 = self.transformCoordinates(float(another_point[0]), float(another_point[1])) 
+
+			# d = np.array([transCoords1.point.x, transCoords1.point.y, 0])
+			# one_point = np.array([transCoords2.point.x, transCoords2.point.y, 0])
+			# another_point = np.array([transCoords3.point.x, transCoords3.point.y, 0])
+
+			# print("ONE POINT", one_point)
+			# print("OTHER POINT", another_point)
 
 			one_vector = one_point - d
 			another_vector = another_point - d
@@ -291,8 +322,8 @@ class detect_faces(Node):
 			normal /= np.linalg.norm(normal)
 			# normal *= -1
 
-			# self.get_logger().info(f"NORMAL: {normal}")
-		
+			self.get_logger().info(f"NORMAL: {normal}")
+			
 			marker2 = Marker()
 
 			# marker2.header.parking_image_id = "/base_link"
@@ -318,26 +349,17 @@ class detect_faces(Node):
 			marker2.pose.position.y = float(normal[1])
 			marker2.pose.position.z = float(normal[2])
 
+			# print("DETECTED: ", len(self.detected_faces))
+			# print("CURRENT: ", self.current_num_of_faces)
+
 			if len(self.detected_faces) > self.current_num_of_faces: 
+				# print("PUBLISHED NORMAL")
 				self.new_face_pub.publish(marker)
 				self.marker_pub.publish(marker2)
 				self.current_num_of_faces = len(self.detected_faces)
-			self.marker_pub.publish(marker)
 
-	def quaternion_to_yaw(self, quaternion):
-		# Convert quaternion to Euler angles (yaw)
-		q = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
-		roll, pitch, yaw = tf2_ros.transformations.euler_from_quaternion(q)
-		return yaw
 
-	def odometry_callback(self, msg):
-		try:
-			transform = self.tf_buffer.lookup_transform('base_link', 'odom', rclpy.time.Time())
-			quaternion = transform.transform.rotation
-			self.current_yaw = self.quaternion_to_yaw(quaternion)
-		except Exception as e:
-			pass
-			# print("Error:", e)
+
 
 	def segment_circle(self, image):
 		# Convert image to grayscale
@@ -370,23 +392,25 @@ class detect_faces(Node):
 		return binary_mask
 
 	def calculate_velocity(self, direction):
-		# Convert target vector to polar coordinates
 		# angle = math.atan2(direction[1], direction[0])
-		direction[1] *= -1
+		# direction[1] *= -1
+		print("dot:", np.dot(direction, np.array([1, 0])))
+		print("norm: ", np.linalg.norm(direction))
+		print("vmesni: ", np.dot(direction, np.array([1, 0])) / np.linalg.norm(direction))
 		angle = np.arccos(np.dot(direction, np.array([1, 0])) / np.linalg.norm(direction))
 
-		if direction[0] < 0:
-			angle = -1 * (math.pi - angle)
+		# if direction[0] < 0:
+		# 	angle = -1 * (math.pi - angle)
 
-		# Calculate angular velocity (to align with target direction)
-		angular_velocity = angle - self.current_yaw
 
-		# Set linear velocity (move forward)
-		linear_velocity = 0.4  # Adjust speed as needed
+		# print("current yaw:", self.current_yaw)
+		angular_velocity = angle
+
+		linear_velocity = 0.3
 
 		print("linear: ", linear_velocity, "angular: ", angular_velocity)
 
-		return linear_velocity, angular_velocity
+		return linear_velocity, angular_velocity - (math.pi / 2)
 
 	def fix_angle(self, current_pos, angle):
 		if current_pos == 2:
@@ -402,7 +426,7 @@ class detect_faces(Node):
 	def parking_callback(self, data):
 		img = self.bridge.imgmsg_to_cv2(data, "bgr8") 
 		middle_point_x = np.shape(img)[1] / 2
-		middle_point_y = np.shape(img)[0] / 2 + 100
+		middle_point_y = np.shape(img)[0] / 2 - 150
 
 		# print(f"middle point [{middle_point_x}, {middle_point_y}]")
 
@@ -412,20 +436,32 @@ class detect_faces(Node):
 		x_avg = np.sum(circle_indices[1]) / len(circle_indices[1])
 		y_avg = np.sum(circle_indices[0]) / len(circle_indices[0])
 
-		# print(f"average [{x_avg}, {y_avg}]")
+		print(f"middle point [{middle_point_x}, {middle_point_y}]")
+		print(f"average [{x_avg}, {y_avg}]")
 
 		move_x = float(x_avg - middle_point_x)
 		move_y = float(y_avg - middle_point_y)
 
-		# print(f"direction vector [{move_x}, {move_y}]")
+		print(f"direction vector [{move_x}, {move_y}]")
 
+		cv2.imshow("parking", segmented_circle)
+		key = cv2.waitKey(1)		# Ensure angular velocity is within [-pi, pi] range
+		# if angular_velocity > math.pi:
+		# 	angular_velocity -= 2 * math.pi
+		# elif angular_velocity < -math.pi:
+		# 	angular_velocity += 2 * math.pi
+		cv2.imshow("ogImage", img)
+		key = cv2.waitKey(1)
+		if key==27:
+			print("exiting")
+			exit()
 
 		if not math.isnan(move_x) and not math.isnan(move_y):
 			self.searching = False
 			linear, angular = self.calculate_velocity(np.array([move_x, move_y]))
 			direction = Twist()
 			# direction.linear.x = linear
-			direction.angular.z = -0.75 * angular
+			direction.angular.z = angular
 			print(f"Rotating for {angular} degrees")
 			self.parking_pub.publish(direction)
 			time.sleep(2)
@@ -440,26 +476,19 @@ class detect_faces(Node):
 			print(goal_arm_pos)
 			self.arm_command_pub.publish(goal_arm_pos)
 			print("published")
-			time.sleep(4)
+			time.sleep(2)
 			self.current_pos += 1
 			if self.current_pos > 4:
 				self.current_pos = 1
+				goal_arm_pos = String()
+				goal_arm_pos.data = "look_for_parking" + f"{self.current_pos}"
+				self.arm_command_pub.publish(goal_arm_pos)
 				self.searching = True
 
 		
 		# print("X: ", x_avg, "Y: ", y_avg)
 
-		cv2.imshow("parking", segmented_circle)
-		key = cv2.waitKey(1)		# Ensure angular velocity is within [-pi, pi] range
-		# if angular_velocity > math.pi:
-		# 	angular_velocity -= 2 * math.pi
-		# elif angular_velocity < -math.pi:
-		# 	angular_velocity += 2 * math.pi
-		cv2.imshow("ogImage", img)
-		key = cv2.waitKey(1)
-		if key==27:
-			print("exiting")
-			exit()
+
 		
 
 def main():
